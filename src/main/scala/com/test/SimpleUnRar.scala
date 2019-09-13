@@ -34,24 +34,11 @@ object SimpleUnRar extends App with Src {
   @volatile var needStop = false
   val debug = false
 
-  val begin = 12000
-  val end = 99916500
-  val gap = (end - begin) / 8
-  val step1 = Step(begin, begin + gap * 1)
-  val step2 = Step(step1.end, begin + gap * 2)
-  val step3 = Step(step2.end, begin + gap * 3)
-  val step4 = Step(step3.end, begin + gap * 4)
-  val step5 = Step(step4.end, begin + gap * 5)
-  val step6 = Step(step5.end, begin + gap * 6)
-  val step7 = Step(step6.end, begin + gap * 7)
-  val step8 = Step(step7.end, end)
-
-  case class Step(begin: Int, end: Int)
-
-  (step1 :: step2 :: step3 :: step4 :: step5 :: step6 :: step7 :: step8 :: Nil).
-    zipWithIndex.foreach { s =>
+  //  (step1 :: step2 :: step3 :: step4 :: step5 :: step6 :: step7 :: step8 :: Nil).
+  (wordsReg1 :: wordsReg2 :: wordsReg3 :: wordsReg4 :: wordsReg5 :: wordsReg6
+    :: wordsReg7 :: wordsReg8 :: Nil).zipWithIndex.foreach { wr =>
     Worker.sThreadPoolExecutor.submit({
-      execSteps(s._1.begin, s._1.end, s._2 + 1)
+      exec13(wr._1, wr._2)
       }.run$)
   }
   //  breakable {
@@ -74,9 +61,6 @@ object SimpleUnRar extends App with Src {
   //    }
   //  }
 
-  lazy val wordsRegs = Array(wordsReg /*wordsReg01, wordsReg02, wordsReg03, wordsReg04, wordsReg05, wordsReg06, wordsReg07,
-    wordsReg08, wordsReg08, wordsReg09, wordsReg10*/)
-
   def execSteps(from: Int, to: Int, step: Int): Unit = {
     breakable {
       for (n <- from until to) {
@@ -88,11 +72,21 @@ object SimpleUnRar extends App with Src {
     }
   }
 
+  def exec13(wordsReg: WordsReg, n: Int): Unit = {
+    var count = 0
+    while (!needStop) {
+      val pwd_maybe = wordsReg.next()
+      /*if (count % 1000 == 0) */ println(s"$pwd_maybe, count: $count, N:$n.")
+      exec(pwd_maybe)
+      count += 1
+    }
+  }
+
   def exec(f: => String): Unit = {
     if (needStop) return
     val timeBegin = System.nanoTime()
     val pwdMaybe = f // wordsRegs((Math.random() * wordsRegs.length).toInt).next()
-    println(s"[${new Date(System.currentTimeMillis())}]----> pwd_maybe: $pwdMaybe <----------------------------")
+    //    println(s"[${new Date(System.currentTimeMillis())}]----> pwd_maybe: $pwdMaybe <----------------------------")
 
     def boo: Boolean = {
       val archive = new Archive(src, pwdMaybe, false)
@@ -106,7 +100,7 @@ object SimpleUnRar extends App with Src {
         true
       } catch {
         case e: RarException =>
-          println("RarException: " + e.getMessage)
+          //          println("RarException: " + e.getMessage)
           false
         case e: Throwable =>
           e.printStackTrace()
@@ -175,13 +169,42 @@ object SimpleUnRar extends App with Src {
       }
       println(s"[DONE]> [${new Date(System.currentTimeMillis())}] --- pwd_final: $pwdMaybe ----- time duration: ${(System.nanoTime() - timeBegin) * 1e-9}s")
     } else {
-      println(s"[NO DONE]> [${new Date(System.currentTimeMillis())}] --- pwd_maybe: $pwdMaybe ----- time duration: ${(System.nanoTime() - timeBegin) * 1e-9}s")
+      //      println(s"[NO DONE]> [${new Date(System.currentTimeMillis())}] --- pwd_maybe: $pwdMaybe ----- time duration: ${(System.nanoTime() - timeBegin) * 1e-9}s")
     }
   }
 
-
-  // TODO: 需求改成了8位纯数字
-  lazy val wordsReg = new WordsReg(8, new WordRule(50, ('0', '9')))
+  lazy val wordsReg1 = new WordsReg(13,
+    new WordRule(4, ('A', 'Z')),
+    new WordRule(10, ('0', '9'), ('a', 'z')),
+    new WordRule(1, "!#$%&*-_".toCharArray))
+  lazy val wordsReg2 = new WordsReg(13,
+    new WordRule(4, ('A', 'Z')),
+    new WordRule(10, ('0', '9'), ('a', 'z')),
+    new WordRule(1, "!#$%&*-_".toCharArray))
+  lazy val wordsReg3 = new WordsReg(13,
+    new WordRule(4, ('A', 'Z')),
+    new WordRule(10, ('0', '9'), ('a', 'z')),
+    new WordRule(1, "!#$%&*-_".toCharArray))
+  lazy val wordsReg4 = new WordsReg(13,
+    new WordRule(4, ('A', 'Z')),
+    new WordRule(10, ('0', '9'), ('a', 'z')),
+    new WordRule(1, "!#$%&*-_".toCharArray))
+  lazy val wordsReg5 = new WordsReg(13,
+    new WordRule(4, ('A', 'Z')),
+    new WordRule(10, ('0', '9'), ('a', 'z')),
+    new WordRule(1, "!#$%&*-_".toCharArray))
+  lazy val wordsReg6 = new WordsReg(13,
+    new WordRule(4, ('A', 'Z')),
+    new WordRule(10, ('0', '9'), ('a', 'z')),
+    new WordRule(1, "!#$%&*-_".toCharArray))
+  lazy val wordsReg7 = new WordsReg(13,
+    new WordRule(4, ('A', 'Z')),
+    new WordRule(10, ('0', '9'), ('a', 'z')),
+    new WordRule(1, "!#$%&*-_".toCharArray))
+  lazy val wordsReg8 = new WordsReg(13,
+    new WordRule(4, ('A', 'Z')),
+    new WordRule(10, ('0', '9'), ('a', 'z')),
+    new WordRule(1, "!#$%&*-_".toCharArray))
 
   // ASCii 字符序：
   // ! " # $ % & ' ( ) * + , - . /
@@ -251,7 +274,16 @@ object SimpleUnRar extends App with Src {
       for (n <- 0 until fixedSize) {
         val rem = remainingWordRules(array, n)
         val rule = rem((Math.random() * rem.length).toInt)
-        array(n) = rule.next()
+        array(n) = {
+          var next = rule.next()
+          var bool = true
+          while (n > 0 && bool) {
+            bool = (0 until n).exists(array(_) == next)
+            if (bool) next = rule.next()
+          }
+          rule.nextDone()
+          next
+        }
       }
       reset()
       array.mkString("")
@@ -262,7 +294,8 @@ object SimpleUnRar extends App with Src {
       wordRules.foreach { w =>
         if (w.hasNext && (
           if (index < fixedSize * 2 / 3) !w.is$ else true) && (
-          if (前边有连续两个大写字母(array, index)) !w.isA else true)
+          if (前边有连续两个大写字母(array, index)) !w.isA else true) && (
+          if (到最后一位了前面还没有特殊字符(array, index)) w.is$ else true)
         ) seq ::= w
       }
       seq
@@ -271,6 +304,12 @@ object SimpleUnRar extends App with Src {
     private def 前边有连续两个大写字母(array: Array[Char], index: Int): Boolean = (index >= 2
       && array(index - 1) >= 'A' && array(index - 1) <= 'Z'
       && array(index - 2) >= 'A' && array(index - 2) <= 'Z')
+
+    private def 到最后一位了前面还没有特殊字符(array: Array[Char], index: Int): Boolean =
+      index == fixedSize - 1 && ! {
+        val $rul = wordRules.filter(_.is$).head
+        (0 until index).exists(i => $rul.array.contains(array(i)))
+      }
 
     private def reset(): Unit = {
       wordRules.foreach(_.reset())
@@ -296,8 +335,11 @@ object SimpleUnRar extends App with Src {
 
     def next(): Char = {
       require(remaining > 0)
-      remaining -= 1
       array((Math.random() * array.length).toInt)
+    }
+
+    def nextDone(): Unit = {
+      remaining -= 1
     }
 
     def reset(): Unit = {
