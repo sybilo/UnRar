@@ -14,26 +14,12 @@
  * limitations under the License.
  */
 
-package com.test
-
-import java.io.File
+package com.test;
 
 /**
  * @author Chenai Nakam(chenai.nakam@gmail.com)
- * @version 1.0, 04/09/2019
+ * @version 1.0, 14/09/2019
  */
-trait Src4Test {
-//  val path = "/home/weichou/git/sybilo/UnRar/libs/java-unrar-decryption-supported-src-20120903.rar"
-  val path = "/home/weichou/git/sybilo/UnRar/libs/java-unrar-decryption-supported-src-20120903/rar/test2.rar"
-  val password = "1234"
-  lazy val src = new File(path)
-  println("path: " + path)
-  lazy val dst = {
-    val i = path.lastIndexOf('.')
-    val p = if (i >= src.getParent.length + 2) path.substring(0, i) else path + ".dir"
-    val dir = new File(p)
-    if (!dir.exists) dir.mkdirs
-    dir
-  }
-  println("dst: " + dst)
+public interface IReadFully {
+    void readFully(byte[] buffer, int off, int len);
 }
