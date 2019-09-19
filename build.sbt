@@ -1,12 +1,25 @@
-name := "UnRar"
+name := unrar
 
 version := "0.1"
 
 scalaVersion := "2.12.6"
 
-lazy val akkaVersion = "2.5.25"
+//lazy val akkaVersion = "2.5.25"
 
 unmanagedBase := baseDirectory.value / "libs"
+
+lazy val unrar = "UnRar"
+lazy val scalaSettings = Seq(
+  scalaVersion := "2.12.6"
+)
+
+//lazy val root = Project(id = unrar, base = file("."))
+//  .dependsOn(unrar_dec_supported)
+//  .settings(scalaSettings,
+//    aggregate in update := false
+//  )
+//
+//lazy val unrar_dec_supported = project.settings(scalaSettings)
 
 offline := true
 
